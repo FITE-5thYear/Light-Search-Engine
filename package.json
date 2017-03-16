@@ -1,0 +1,35 @@
+{
+  "name": "light-search-engine",
+  "version": "1.0.0",
+  "description": "IR demonstration",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "glob": "^7.1.1",
+    "lodash": "^4.17.4",
+    "method-override": "^2.3.7",
+    "porter-stemmer": "^0.9.1",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FITE-5thYear/Light-Search-Engine.git"
+  },
+  "keywords": [
+    "IR",
+    "demo",
+    "search",
+    "engine"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FITE-5thYear/Light-Search-Engine/issues"
+  },
+  "homepage": "https://github.com/FITE-5thYear/Light-Search-Engine#readme"
+}

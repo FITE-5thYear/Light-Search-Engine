@@ -7,10 +7,14 @@
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "glob": "^7.1.1",
+    "hashmap": "^2.0.6",
     "lodash": "^4.17.4",
     "method-override": "^2.3.7",
+    "node-tokenizer": "0.0.0",
     "porter-stemmer": "^0.9.1",
-    "winston": "^2.3.1"
+    "q": "^1.4.1",
+    "winston": "^2.3.1",
+    "xml2js": "^0.4.17"
   },
   "devDependencies": {},
   "scripts": {

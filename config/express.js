@@ -17,4 +17,11 @@ module.exports = function(app){
     config.getGlobbedFiles('./modules/*/app.js').forEach(function(routePath){
         require(path.resolve(routePath))(app);
     });
+
+    //setting static modules public folder
+    config.getDirectories(config.rootPath + '/modules').forEach(function(pack){
+        app.use('/' + pack, express.static(config.rootPath + '/modules/' + pack + '/public'));
+    });
+
+    app.use('/bower_components/', express.static(config.rootPath + '/bower_components'));
 }

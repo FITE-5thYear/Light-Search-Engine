@@ -1,13 +1,28 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>
-            Light Search Engine
-        </title>
-    </head>
+        <title>Light Search Engine</title>
+        <link rel="stylesheet" href="/pages/assets/css/main.css">
+        <link rel="stylesheet" href="/pages/assets/css/lato.css">
+        <link rel="stylesheet" href="/pages/assets/css/raleway.css">
+        <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+        <script src="/pages/assets/js/main.js"></script> 
+    </head>    
     <body>
-        <h2 style="text-align: center;">
-            Light Search Engine
-        </h2>
+        <header>
+            <h1 class="name">Light Search Engine</h1>
+        </header>
+        
+        <section>
+            <div class="ui action input">
+                <input type="text" placeholder="Search Wikipedia..." class="search" id="input-search" />
+                <button class="search ui button btn-wiki" id="button-search">Search</button>
+                <a href="#" target="_blank" class="random">Feeling Lucky?</a>
+                <div class="post-awesome-line"></div>
+                <ul class="results" id="results">
+                </ul>
+            </div>
+        </section>    
+
     </body>
 </html>

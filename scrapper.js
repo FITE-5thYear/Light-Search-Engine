@@ -27,6 +27,27 @@ parser
             });
         });
 
+        return wikiDocs
+    })
+    .then(function(wikiDocs){
+
+        winston.info('Starting stemming process...');
+
+        var stemmer = require('porter-stemmer').stemmer;
+
+        wikiDocs.forEach(function(doc){
+
+            var stemmedTokens = [];
+
+            doc.tokens = doc.tokens.map(function(token){
+                return stemmer(token);
+            });
+        });
+
+        return wikiDocs;
+    })
+    .then(function(wikiDocs){
+
     })
     .catch(function(err){
         winston.error(err);

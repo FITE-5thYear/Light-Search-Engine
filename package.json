@@ -10,15 +10,20 @@
     "hashmap": "^2.0.6",
     "lodash": "^4.17.4",
     "method-override": "^2.3.7",
+    "mysql": "^2.13.0",
+    "mysql2": "^1.2.0",
     "node-tokenizer": "0.0.0",
     "porter-stemmer": "^0.9.1",
     "q": "^1.4.1",
+    "sequelize": "^3.30.2",
     "winston": "^2.3.1",
     "xml2js": "^0.4.17"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app",
+    "scrap": "node scrapper",
+    "test-db" : "node tests/db.js"
   },
   "repository": {
     "type": "git",

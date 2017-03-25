@@ -3,5 +3,14 @@ var path = require('path'),
 
 module.exports = {
     rootPath : rootPath,
-    port : process.env.PORT || 3000
+    port : process.env.PORT || 3000,
+    db : {
+        name : 'light_search_engine',
+        username : 'root',
+        password : '',
+        host : 'localhost',
+        port : 3306,
+        dialect : 'mysql',
+        enableLogging : true
+    }
 }

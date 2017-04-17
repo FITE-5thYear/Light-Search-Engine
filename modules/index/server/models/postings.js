@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(sequelize, DataTypes){
-    var PostingsList = sequelize.define('Posting', {
+    var PostingsList = sequelize.define('PostingsList', {
         term : {
             type : DataTypes.STRING
         },

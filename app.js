@@ -7,9 +7,6 @@ var express = require('express'),
 
 createApp();
 
-
-
-
 function createApp(){
 
     sequelize.init(function(){
@@ -21,7 +18,12 @@ function createApp(){
         app.listen(config.port);
         winston.info("App started and running on port: " + config.port);
         
+        require('./utilities/index')().then(function(index){
+            //augmenting every request to /search endpoint with the index
+            app.use('/search', function(req, res, next){
+                req.index = index;
+                next();
+            });
+        });
     });    
 }
-
-

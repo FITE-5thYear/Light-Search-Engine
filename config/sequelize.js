@@ -46,7 +46,7 @@ function init(callback){
     .then(function(){          
           models.sequelize = sequelize;
           _.extend(models,db);
-          callback();
+          callback(models);
       }).catch(function(err){
           winston.error('An error occured: %j',err);
           winston.error(util.inspect(err));

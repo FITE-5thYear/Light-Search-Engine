@@ -77,12 +77,12 @@ parser
         tick.stop();
         winston.info('Last process elapsed ' + T.timers.indexing.parse(T.timers.indexing.max()));
         
-        winston.info('Starting to populate persistent storage with inverted index...');
-
         var db = require('./config/sequelize');
 
         db.init(function(db){
 
+            winston.info('Starting to populate persistent storage with inverted index...');
+            
             var tick = new Tick('storing');
             tick.start();
 

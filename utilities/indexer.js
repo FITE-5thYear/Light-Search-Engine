@@ -30,7 +30,6 @@ module.exports.generate = function(docs) {
 
         terms.forEach(function(term){
             if(term == 'buffalo') 
-            console.log('');
 
             if(dictionary.has(term)){
                 //get the term data

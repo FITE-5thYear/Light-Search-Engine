@@ -16,6 +16,9 @@ module.exports.match = function(queryTerms, dictionary){
         attributes : ['term', 'postings'],
         raw : true
     }).then(function(termsData){
+        
+        if(termsData.length == 0) //not found in our corpus
+            return [];
 
         termsData.forEach(function(_termData){
                 _termData.postings = JSON.parse(_termData.postings);
@@ -61,7 +64,7 @@ module.exports.match = function(queryTerms, dictionary){
 
         //TODO: * 10 should be delegates to config files as top-K
         //      * use priority queue
-        return _.first(_.orderBy(scores.values(), 'score', 'desc'), 10);
+        return _.slice(_.orderBy(scores.values(), 'score', 'desc'), 0, 10);
 
     });
 }

@@ -6,8 +6,8 @@ var fs = require('fs'),
     winston = require('../config/winston'),
     q = require('q');
 
-module.exports.parseWikipediaCorpus = function(){
-    return readAndParseXML(__dirname + '/../corpus/enwikisource.xml')
+module.exports.parseWikipediaCorpus = function(filePath){
+    return readAndParseXML(__dirname + filePath)
                 .then(function(result){
                     return cleanWikipediaXMLTree(result); 
                 })

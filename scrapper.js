@@ -8,7 +8,7 @@ var parser = require('./utilities/xml-parser'),
     Tick = T.Tick;
 
 parser
-    .parseWikipediaCorpus() //parse xml to json
+    .parseWikipediaCorpus('/../corpus/enwikisource.xml') //parse xml to json
     .then(function(wikiDocs){
         
         var tick = new Tick('tokenization');
@@ -16,9 +16,8 @@ parser
 
         winston.info('Starting tokenization & first phase cleaning...');
 
-        wikiDocs.forEach(function(doc){
-            doc.tokens = tokenizer.tokenize(doc.text);
-        });
+        for(let i = 0; i < wikiDocs.length; i++)
+            wikiDocs[i].tokens = tokenizer.tokenize(wikiDocs[i].text);
 
         tick.stop();
         winston.info('Last process elapsed ' + T.timers.tokenization.parse(T.timers.tokenization.max()));
@@ -91,8 +90,6 @@ parser
                 bulk = [];
 
             invertedIndex.forEach(function(postings, term){
-                //sort postings
-                postings = _.sortedUniq(postings);
 
                 bulk.push(
                     db.PostingsList.create({

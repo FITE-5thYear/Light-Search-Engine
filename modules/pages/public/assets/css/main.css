@@ -96,14 +96,17 @@ input {
   color: orange;
 }
 
-#results {
-  width: 75%;
+.result-card {
   height: auto;
   list-style: none;
   text-align: left;
   color: #000;
-  margin: 30px auto;
-  padding: 30px;
+  margin: 30px;
+  padding:15px;
+  padding-left: 30px;
+  border-radius: 5px 0 0 5px;
+  border : solid #e0dada 1px;
+
 }
 
 .result-list {

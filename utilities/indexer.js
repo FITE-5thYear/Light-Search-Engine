@@ -29,8 +29,7 @@ module.exports.generate = function(docs) {
         var terms = doc.tokens;
 
         terms.forEach(function(term){
-            if(term == 'buffalo') 
-
+        
             if(dictionary.has(term)){
                 //get the term data
                 let termData = dictionary.get(term);

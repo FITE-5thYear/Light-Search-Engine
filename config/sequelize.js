@@ -1,6 +1,5 @@
 
-var env = require('./../config/env'),
-    Sequelize = require('Sequelize'),
+var Sequelize = require('Sequelize'),
     winston = require('./winston'),
     config = require('./config'),
     path = require('path'),
@@ -19,10 +18,10 @@ function init(callback){
 
     winston.info('Initializing Sequelize...');
 
-    var sequelize = new Sequelize(env.db.name, env.db.username, env.db.password, {
-        host : env.db.host,
-        port : env.db.port,
-        dialect : env.db.dialect,
+    var sequelize = new Sequelize(config.db.name, config.db.username, config.db.password, {
+        host : config.db.host,
+        port : config.db.port,
+        dialect : config.db.dialect,
         logging : config.db.enableLogging ? winston.verbose : false
     });
 

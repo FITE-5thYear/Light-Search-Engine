@@ -23,9 +23,11 @@ module.exports.parseCorpus = function(){
         return readAndParseFile(corpusDir + config.corpus);      
     }
 
-    if (config.corpus == "adi"){
+    if (config.corpus == "ADI"){
         return readAndParseFile(corpusDir + config.corpus);      
     }
+
+    winston.error("No corpus with name:" + config.corpus);
 }
 
 function readAndParseXML(path){

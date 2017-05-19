@@ -1,6 +1,6 @@
 'use strict';
 
-var parser = require('./utilities/xml-parser'),
+var parser = require('./utilities/corpus-parser'),
     tokenizer = require('./utilities/tokenizer'),
     winston = require('./config/winston'),
     stopwordsMapper = require('./utilities/stopwords-mapper')(),
@@ -8,7 +8,7 @@ var parser = require('./utilities/xml-parser'),
     Tick = T.Tick;
 
 parser
-    .parseWikipediaCorpus('/../corpus/enwikisource.xml') //parse xml to json
+    .parseCorpus()
     .then(function(wikiDocs){
         
         var tick = new Tick('tokenization');
@@ -81,9 +81,17 @@ parser
 
         db.init(function(db){
 
+            winston.info('Clearing index');
+
+            db.PostingsList.destroy({
+                where: {},
+                truncate: true
+            });
+
             winston.info('Starting to populate persistent storage with inverted index...');
             
             var tick = new Tick('storing');
+
             tick.start();
 
             var _ = require('lodash'),

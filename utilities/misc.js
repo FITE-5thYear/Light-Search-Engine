@@ -1,5 +1,5 @@
 'use strict';
-var xmlParser = require('./xml-parser'),
+var parser = require('./corpus-parser'),
     _ = require('lodash');
 
 module.exports.tickerToString = function(ticker){
@@ -10,7 +10,7 @@ module.exports.getDocumentsById = function(docs){
 
     var docsIds = docs.map(function(doc){ return doc.docId; });
 
-    return xmlParser.parseWikipediaCorpus('./../corpus/enwikisource.xml')
+    return parser.parseCorpus()
                 .then(function(docs){
                     docs = docs.filter(function(doc){
                             return _.includes(docsIds, +doc.id); 

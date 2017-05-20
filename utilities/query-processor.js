@@ -3,7 +3,8 @@
 var tokenizer = require('./tokenizer'),
     stemmer = require('porter-stemmer').stemmer,
     stopwordsMapper = require('./stopwords-mapper')(),
-    HashMap = require('hashmap');
+    HashMap = require('hashmap'),
+    doLemmatize = require('./../config/env').lemmatize;
 
 module.exports.process = function(queryString){
     //tokenize
@@ -15,26 +16,68 @@ module.exports.process = function(queryString){
     });
 
     //stemming
-    queryTokens = queryTokens.map(function(token){
-        return stemmer(token);
-    });
+    
+    if(doLemmatize){ // lemmatize using NLTK
+        
+        var python = require('./python-consumer'),
+            lemmatizationPromises = [];
 
-    //augment with some info about the query tokens
-    var map = new HashMap();
-    queryTokens.forEach(function(token){
-        if(map.has(token)){
-            var tokenObject = map.get(token);
-            tokenObject.tf += 1;
+        queryTokens.forEach(function(token){
+            lemmatizationPromises.push(
+                python.lemmatize(token)
+            );
+        });
 
-            map.set(token, tokenObject);
-        }
-        else {
-            map.set(token, {
-                term : token,
-                tf : 1
+        return Promise.all(lemmatizationPromises)
+                .then(function(queryTokens){
+                    //augment with some info about the query tokens
+                    var map = new HashMap();
+                    queryTokens.forEach(function(token){
+                        if(map.has(token)){
+                            var tokenObject = map.get(token);
+                            tokenObject.tf += 1;
+
+                            map.set(token, tokenObject);
+                        }
+                        else {
+                            map.set(token, {
+                                term : token,
+                                tf : 1
+                            });
+                        }
+                    });
+
+                    return map.values();
+                });
+
+    }else {
+        return new Promise(function(resolve, reject){
+            queryTokens = queryTokens.map(function(token){
+                return stemmer(token);
             });
-        }
-    });
 
-    return map.values();
+            //augment with some info about the query tokens
+            var map = new HashMap();
+            queryTokens.forEach(function(token){
+                if(map.has(token)){
+                    var tokenObject = map.get(token);
+                    tokenObject.tf += 1;
+
+                    map.set(token, tokenObject);
+                }
+                else {
+                    map.set(token, {
+                        term : token,
+                        tf : 1
+                    });
+                }
+            });
+
+            resolve(map.values());
+        });
+        
+    }
+    
+
+    
 }

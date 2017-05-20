@@ -27,13 +27,17 @@ module.exports.match = function(queryTerms, dictionary){
         queryTerms.forEach(function(queryTerm){
             
             //fetch term postings and factors
-            let termData = {};
+            let termData = null;
             termsData.forEach(function(_termData){
                if(queryTerm.term == _termData.term)
                     termData = _termData;
             });
 
-            //calculate idf of term
+            
+            if(!termData) //we don't have the term in the index, skip it
+                return;
+            
+            //calculate idf of term            
             let idf = math.log(termData.postings.ndf, 2);
 
             //calculate query term weight Wt,q

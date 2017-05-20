@@ -19,15 +19,19 @@ module.exports.parseCorpus = function(){
                     }); 
     }
 
-    if (config.corpus == "cran"){
-        return readAndParseFile(corpusDir + config.corpus);      
+    if (config.corpus == "CRAN"){
+        return readAndParseStructer1(corpusDir +'CRAN/'+config.corpus+'.ALL');      
     }
 
     if (config.corpus == "ADI"){
-        return readAndParseFile(corpusDir + config.corpus);      
+        return readAndParseStructer1(corpusDir + "ADI/"+ config.corpus+'.ALL');      
     }
 
-    winston.error("No corpus with name:" + config.corpus);
+    if (config.corpus == "TIME"){
+        return readAndParseStructer2(corpusDir + "TIME/"+ config.corpus+'.ALL');      
+    }
+
+    winston.error("No corpus with name " + config.corpus);
 }
 
 function readAndParseXML(path){
@@ -73,20 +77,20 @@ function cleanWikipediaXMLTree(xmlObject){
     return newTree;
 }
 
-function readAndParseFile(path){
+function readAndParseStructer1(filePath){
     var deferred = q.defer();
 
-    fs.readFile(path, 'utf8', function(err, data) {
+    fs.readFile(filePath, 'utf8', function(err, data) {
 
         if(err){
             deferred.reject(err);
         }
 
-        var corpus = data.split("\n");
-        var docs = new Array();
+        var corpusLines = data.split("\n");
+        var docsArray = new Array();
         var docsCount = -1,section;
 
-        corpus.forEach(function(line){
+        corpusLines.forEach(function(line){
             var lineString = String(line);
 
             if (lineString.startsWith(".I")){
@@ -119,24 +123,58 @@ function readAndParseFile(path){
                 doc.title = "";
                 doc.text  = "";
                 doc.auther = "";
-                docs.push(doc);
+                docsArray.push(doc);
                 docsCount++;
             }
 
             if (section == 1){
-                docs[docsCount].title = docs[docsCount].title + lineString;
+                docsArray[docsCount].title = docsArray[docsCount].title + lineString;
             }
 
             if (section == 2){
-                docs[docsCount].auther = docs[docsCount].auther + lineString;
+                docsArray[docsCount].auther = docsArray[docsCount].auther + lineString;
             }
 
             if (section == 3){
-                docs[docsCount].text = docs[docsCount].text + lineString;
+                docsArray[docsCount].text = docsArray[docsCount].text + lineString;
             }
         });
 
-        deferred.resolve(docs);
+        deferred.resolve(docsArray);
     });
     return deferred.promise;
 }
+
+
+function readAndParseStructer2(filePath){
+    var deferred = q.defer();
+
+    fs.readFile(filePath, 'utf8', function(err, data) {
+
+        if(err){
+            deferred.reject(err);
+        }
+
+        var corpusLines = data.split(/\r?\n/);
+            var docsArray = new Array();
+            var docsCount = -1;
+
+            corpusLines.forEach(function(line){
+                if (line.startsWith("*text")){
+                    docsCount++;
+                    docsArray[docsCount] = new Object();
+                    docsArray[docsCount].id = docsCount;
+                    docsArray[docsCount].text = "";
+                }else
+                if (line.startsWith("*stop")){
+
+                }else{
+                    docsArray[docsCount].text = docsArray[docsCount].text.trim() + " " + line.trim();
+                }
+            });
+
+        deferred.resolve(docsArray);
+    });
+    return deferred.promise;
+}
+

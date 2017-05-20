@@ -13,5 +13,5 @@ module.exports = {
         dialect : 'mysql',
         enableLogging : false
     },
-    corpus: 'cran' // name with extention
+    corpus: 'TIME' 
 }

@@ -13,9 +13,9 @@ module.exports.init = function(){
     var corpusDir = __dirname + '/../corpus/';
     if (config.corpus == "CRAN" || config.corpus == "ADI"){
     winston.info('Read quries file');
-    var quriesFileData      = fs.readFileSync(corpusDir +'CRAN/'+config.corpus +".QRY",'utf-8');
+    var quriesFileData      = fs.readFileSync(corpusDir + config.corpus + '/' + config.corpus +".QRY",'utf-8');
     winston.info('Read relevance file');
-    var relevanceFileData   = fs.readFileSync(corpusDir +'CRAN/'+config.corpus +".REL",'utf-8');
+    var relevanceFileData   = fs.readFileSync(corpusDir + config.corpus + '/' +config.corpus +".REL",'utf-8');
     var quriesHashMap = readAndParseQueriesFile(quriesFileData);
     quriesHashMap = readAndParseRelevanceFile(relevanceFileData,quriesHashMap);
     module.exports.quriesHashMap = quriesHashMap;
@@ -27,7 +27,7 @@ module.exports.init = function(){
 
 function readAndParseQueriesFile(data){
     var queriesFile = data.split(/\r?\n/);
-    var queries = new Array();
+    var queries = new Array();      
     var queriesCount = -1,section;
 
     queriesFile.forEach(function(line){

@@ -10,18 +10,21 @@ var path = require('path'),
     evaluater = require('./../../../../utilities/evaluator'),
     async = require('async');
 
+ evaluater.init();
 
 module.exports.evaluate = function(req, res){
     var queriesArray = new Array();
-    evaluater.init();
+   
     evaluater.quriesHashMap.forEach(function(value,key) {
-        queriesArray.push({
-            id: key,
-            tokens: queryProcessor.process(value.text)
+        queryProcessor.process(value.text).then(function(tokens){
+            queriesArray.push({
+                id: key,
+                tokens: tokens
+            });
         });
     });
 
-    async.map(queriesArray.slice(0,1),processQueryToken, function(err,results) {
+    async.map(queriesArray,processQueryToken, function(err,results) {
         if(err) {
             console.log(err);
         } else {
@@ -37,15 +40,12 @@ module.exports.evaluate = function(req, res){
 var processQueryToken = function(query,callback){
     matchingFunction.match(query.tokens).then(function(results){
 
-       
-        /*var queryObject = evaluater.quriesHashMap.get(query.id);
-        
+        var queryObject = evaluater.quriesHashMap.get(query.id);
         var score = new Object();
+        
         score.relevant_items_retrieved  = 0;
         score.retrieved_items           = 10;
         score.relevant_items            = queryObject.relevanceDocs.length;
-
-        
 
         queryObject.relevanceDocs.forEach(function(docId){
             results.forEach(function(resultDoc){
@@ -53,9 +53,9 @@ var processQueryToken = function(query,callback){
                     score.relevant_items_retrieved++;
                 }
             });
-        });*/
-        
-        
-        callback(null,results);
+        });
+
+        callback(null,score);
+
     });
 }

@@ -12,5 +12,6 @@ module.exports = {
         port : 3306,
         dialect : 'mysql',
         enableLogging : false
-    }
+    },
+    corpus: 'cran' // name with extention
 }

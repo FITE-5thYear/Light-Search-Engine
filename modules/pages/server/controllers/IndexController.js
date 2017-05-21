@@ -15,22 +15,26 @@ module.exports.renderIndex = function(req, res){
 module.exports.search = function(req, res){
     console.log(req.query);
 
-    var tokens = queryProcessor.process(req.query.input);
+    queryProcessor
+    .process(req.query.input)
+    .then(function(tokens){
+        return matchingFunction
+                .match(tokens)
+                .then(function(scores){
+                    return misc.getDocumentsById(scores);
+                })
+                .then(function(results){
+                    var templateString = fs.readFileSync(path.resolve(__dirname + '//..//views//results.html'), 'utf-8');
 
-    matchingFunction
-        .match(tokens)
-        .then(function(scores){
-            return misc.getDocumentsById(scores);
-        })
-        .then(function(results){
-            var templateString = fs.readFileSync(path.resolve(__dirname + '//..//views//results.html'), 'utf-8');
+                    res.set('Content-Type', 'text/html');
+                    return res.send(Mustache.render(templateString, {results : results}));            
+                });
+    })
+    .catch(function(err){
+        winston.error(err);
+        return res.status(500).end();
+    });
 
-            res.set('Content-Type', 'text/html');
-            return res.send(Mustache.render(templateString, {results : results}));            
-        })
-        .catch(function(err){
-            winston.error(err);
-            return res.status(500).end();
-        });
+    
     
 }

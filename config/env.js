@@ -13,5 +13,7 @@ module.exports = {
         dialect : 'mysql',
         enableLogging : false
     },
-    corpus: 'cran' // name with extention
+    corpus: 'cran', // name with extention
+    wordNetPath : './node_modules/wordnet-magic/data/sqlite-31.db',
+    lemmatize : true
 }

@@ -5,7 +5,9 @@ var parser = require('./utilities/corpus-parser'),
     winston = require('./config/winston'),
     stopwordsMapper = require('./utilities/stopwords-mapper')(),
     T = require('exectimer'),
-    Tick = T.Tick;
+    Tick = T.Tick,
+    doLemmatize = require('./config/env.js').lemmatize,
+    async = require('async');
 
 parser
     .parseCorpus()
@@ -49,21 +51,54 @@ parser
 
         winston.info('Starting stemming process...');
 
-        var stemmer = require('porter-stemmer').stemmer;
+        if(!doLemmatize){
+            var stemmer = require('porter-stemmer').stemmer;
 
-        wikiDocs.forEach(function(doc){
+            wikiDocs.forEach(function(doc){
 
-            var stemmedTokens = [];
+                var stemmedTokens = [];
 
-            doc.tokens = doc.tokens.map(function(token){
-                return stemmer(token);
+                doc.tokens = doc.tokens.map(function(token){
+                    return stemmer(token);
+                });
             });
-        });
 
-        tick.stop();
-        winston.info('Last process elapsed ' + T.timers.stemming.parse(T.timers.stemming.max()));        
+            tick.stop();
+            winston.info('Last process elapsed ' + T.timers.stemming.parse(T.timers.stemming.max()));        
 
-        return wikiDocs;
+            return wikiDocs;
+
+        }else { // use NLTK lemmatization
+            var outerPromises = [];
+            
+            var python = require('./utilities/python-consumer');            
+            
+            wikiDocs.forEach(function(doc){                
+
+                var  innerPromises = [];
+
+                doc.tokens.forEach(function(token){
+                    innerPromises.push(python.lemmatize(token));
+                });
+
+                outerPromises.push(
+                    Promise.all(innerPromises).then(function(lemmatizedTokens){                        
+                        doc.tokens = lemmatizedTokens;
+                    })
+                );
+                
+            });
+
+            return Promise.all(outerPromises).then(function(){
+                python.end(); // ugly af!
+
+                tick.stop();
+                winston.info('Last process elapsed ' + T.timers.stemming.parse(T.timers.stemming.max()));        
+
+                return wikiDocs;
+            });
+        }
+        
     })
     .then(function(wikiDocs){
         
@@ -72,7 +107,9 @@ parser
 
         winston.info('Starting to generate inverted index...');
 
-        var invertedIndex = require('./utilities/indexer').generate(wikiDocs);
+        var indexes = require('./utilities/indexer').generate(wikiDocs)
+
+        var invertedIndex = indexes.invertedIndex;
 
         tick.stop();
         winston.info('Last process elapsed ' + T.timers.indexing.parse(T.timers.indexing.max()));
@@ -110,7 +147,9 @@ parser
             Promise.all(bulk)
               .then(function(){
                   tick.stop();
-                  winston.info('Last process elapsed ' + T.timers.storing.parse(T.timers.storing.max()));                  
+                  winston.info('Last process elapsed ' + T.timers.storing.parse(T.timers.storing.max()));                                    
+
+                  populateDocumentVectors(db, indexes.documentsVectors);
               });
 
         });
@@ -119,3 +158,44 @@ parser
     .catch(function(err){
         winston.error(err);
     });
+
+
+
+
+function populateDocumentVectors(db, documentsVectors) {
+    winston.info('Starting to populate persistent storage with document vectors...');
+    var tick = new Tick('storing_document_vectors');
+    tick.start();
+
+
+    // documentVectors is a hash map
+    // key is document id
+    // value is a hash map of terms each key is the term and each value is tf in the document
+
+    var bulk = [];
+
+    documentsVectors.forEach(function(terms, documentId){
+        
+        var vector = [];
+
+        terms.forEach(function(tf, term){
+            vector.push({
+                term : term,
+                tf : tf
+            });  
+        });
+
+        bulk.push(
+            db.DocumentVectors.create({
+                docId : documentId,
+                termsVector : vector 
+            })
+        );
+    });
+
+    Promise.all(bulk)
+           .then(function(){
+                tick.stop();
+                 winston.info('Last process elapsed ' + T.timers.storing_document_vectors.parse(T.timers.storing_document_vectors.max()));
+           });
+}

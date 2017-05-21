@@ -20,16 +20,33 @@
 var HashMap = require('hashmap');
 
 module.exports.generate = function(docs) {
-    
-    //a hash map dictionary to store all the terms and thier postings
-    var dictionary = new HashMap(),
+        
+    var dictionary = new HashMap(), //a hash map dictionary to store all the terms and thier postings
+        documentsVectorDictionary = new HashMap(), //a hash map to store the documents' vectors
         N = docs.length; // number of documents we have in the collection
 
     docs.forEach(function(doc){ 
         var terms = doc.tokens;
 
+        //each document has an entry in the documentsVectorDictionary.
+        //this entry is (docId, termsDicitionary) as (key, value).
+        var documentTermsDictionary = new HashMap();
+
+        //the documentTermsDictionary is a hash map that holds the terms which the document has.
+        //the structure of the documents dictionary is (term, tfd) as (key, value)
+
         terms.forEach(function(term){
+
+            //calculations for document vector:
+            if(documentTermsDictionary.has(term)){
+                var tfd = documentTermsDictionary.get(term);
+                tfd++;
+                documentTermsDictionary.set(term, tfd);
+            }else {
+                documentTermsDictionary.set(term, 1);
+            }
         
+            //calculations for inverted index
             if(dictionary.has(term)){
                 //get the term data
                 let termData = dictionary.get(term);
@@ -80,7 +97,9 @@ module.exports.generate = function(docs) {
                dictionary.set(term, termData);
             }
         });
+
+        documentsVectorDictionary.set(doc.id, documentTermsDictionary);
     });
 
-    return dictionary;
+    return { invertedIndex : dictionary, documentsVectors : documentsVectorDictionary };
 }

@@ -6,8 +6,7 @@ var parser = require('./utilities/corpus-parser'),
     stopwordsMapper = require('./utilities/stopwords-mapper')(),
     T = require('exectimer'),
     Tick = T.Tick,
-    doLemmatize = require('./config/env.js').lemmatize,
-    async = require('async');
+    doLemmatize = require('./config/env.js').lemmatize;
 
 parser
     .parseCorpus()

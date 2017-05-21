@@ -148,7 +148,7 @@ parser
                   tick.stop();
                   winston.info('Last process elapsed ' + T.timers.storing.parse(T.timers.storing.max()));                                    
 
-                  populateDocumentVectors(db, indexes.documentsVectors);
+                  populateDocumentVectors(db, indexes.documentsVectors,wikiDocs);
               });
 
         });
@@ -161,7 +161,7 @@ parser
 
 
 
-function populateDocumentVectors(db, documentsVectors) {
+function populateDocumentVectors(db, documentsVectors,docs) {
     winston.info('Starting to populate persistent storage with document vectors...');
     var tick = new Tick('storing_document_vectors');
     tick.start();
@@ -188,6 +188,37 @@ function populateDocumentVectors(db, documentsVectors) {
             db.DocumentVectors.create({
                 docId : documentId,
                 termsVector : vector 
+            })
+        );
+    });
+
+    Promise.all(bulk)
+           .then(function(){
+                tick.stop();
+                 winston.info('Last process elapsed ' + T.timers.storing_document_vectors.parse(T.timers.storing_document_vectors.max()));
+
+                 populateDocumentLength(db,docs);
+           });
+}
+
+function populateDocumentLength(db, docs) {
+    winston.info('Starting to populate persistent storage with docs length...');
+    var tick = new Tick('storing_docs_length');
+    tick.start();                   
+
+    var bulk = [];
+
+    winston.info('Clearing docs length');
+    db.Docs.destroy({
+        where: {},
+        truncate: true
+    });
+        
+    docs.forEach(function(doc){
+        bulk.push(
+            db.Docs.create({
+                id : doc.id,
+                length : doc.tokens.length
             })
         );
     });

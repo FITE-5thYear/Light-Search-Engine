@@ -10,7 +10,6 @@ var path = require('path'),
     evaluater = require('./../../../../utilities/evaluator'),
     async = require('async');
 
- evaluater.init();
 
 module.exports.evaluate = function(req, res){
     var queriesArray = new Array();

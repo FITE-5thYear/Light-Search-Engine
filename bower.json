@@ -20,5 +20,8 @@
   ],
   "dependencies": {
     "bootstrap": "^3.3.7"
+  },
+  "devDependencies": {
+    "mark.js": "^8.10.1"
   }
 }

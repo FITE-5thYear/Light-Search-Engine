@@ -13,7 +13,7 @@ module.exports = {
         dialect : 'mysql',
         enableLogging : false
     },
-    corpus: 'TIME',
+    corpus: 'ADI',
     wordNetPath : './node_modules/wordnet-magic/data/sqlite-31.db',
     lemmatize : true,
     k_top : 10

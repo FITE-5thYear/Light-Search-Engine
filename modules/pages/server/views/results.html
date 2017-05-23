@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Light Search Engine</title>
+        <link rel="stylesheet" href="/pages/assets/css/results.css">
+        <link rel="stylesheet" href="/pages/assets/css/lato.css">
+        <link rel="stylesheet" href="/pages/assets/css/raleway.css">
+        <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+        <script src="/pages/assets/js/ResultsController.js"></script> 
+        <script src="/bower_components/jquery/dist/jquery.min.js"></script> 
+        <script src="/bower_components/mark.js/dist/mark.min.js"></script> 
+    </head>    
+        <style>
+        mark{
+            background: yellow;
+            color: black;
+            padding: 0
+        }
+    </style>  
+    <body>
+        <header>
+            <h1 class="name">Light Search Engine</h1><small>v0.2</small>
+        </header>
+
+        
+        
+        <section>
+            <h4 class="results-title">Results:</h4>
+
+            {{#results}}
+           
+            <div class="result-card" onclick="toggle(this)">
+                Document Id : {{id}} | Title : {{title}}
+                <div class="content">
+                    {{text}}
+                </div>
+            </div>
+            {{/results}}            
+        </section>    
+
+        <footer style="text-align:center">
+            V0.2 - Based on Vector Model
+        </footer>
+    </body>
+
+    <script>       
+        var query =  {{{query}}};
+
+        function toggle(element){
+            var $element = $(element),
+                $content = $($element.find('.content'));
+            $content.slideToggle();
+        }
+
+        function highlightQueryTerms(query){
+            var markOptions = {
+                "accuracy" : "exactly",
+                "synonyms": {"for": "retrieval"}
+            };
+            
+            var instance = new Mark(document.querySelector("body"));
+
+            if($.isArray(query)){
+                query.forEach(function(queryToken){
+                    instance.mark(queryToken,markOptions);                    
+                });
+            }else
+                query.split(' ').forEach(function(queryToken){
+                    instance.mark(queryToken,markOptions);
+                });
+        };
+
+        $(document).ready(function() {
+            highlightQueryTerms(query);
+        });
+    </script>
+</html>

@@ -1,0 +1,58 @@
+{
+  "name": "light-search-engine",
+  "version": "1.0.0",
+  "description": "IR demonstration",
+  "main": "app.js",
+  "dependencies": {
+    "async": "^2.4.1",
+    "body-parser": "^1.17.1",
+    "exectimer": "^2.0.3",
+    "express": "^4.15.2",
+    "glob": "^7.1.1",
+    "hashmap": "^2.0.6",
+    "lodash": "^4.17.4",
+    "mathjs": "^3.12.0",
+    "method-override": "^2.3.7",
+    "mustache": "^2.3.0",
+    "mysql": "^2.13.0",
+    "mysql2": "^1.2.0",
+    "node-tokenizer": "0.0.0",
+    "parse5": "^3.0.2",
+    "porter-stemmer": "^0.9.1",
+    "promise-async": "^0.2.0",
+    "q": "^1.4.1",
+    "sequelize": "^3.30.2",
+    "underscore": "^1.8.3",
+    "unirest": "^0.5.1",
+    "util": "^0.10.3",
+    "winston": "^2.3.1",
+    "wordnet-magic": "^0.3.0",
+    "xml2js": "^0.4.17",
+    "xmldom": "^0.1.27",
+    "xmlserializer": "^0.6.0",
+    "xpath": "0.0.24"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app",
+    "scrapping": "node scrapper",
+    "test-db": "node tests/db.js",
+    "python-sematch": "python python-utils/sematch-exposer.py"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FITE-5thYear/Light-Search-Engine.git"
+  },
+  "keywords": [
+    "IR",
+    "demo",
+    "search",
+    "engine"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FITE-5thYear/Light-Search-Engine/issues"
+  },
+  "homepage": "https://github.com/FITE-5thYear/Light-Search-Engine#readme"
+}

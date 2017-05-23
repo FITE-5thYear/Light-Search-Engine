@@ -1,0 +1,27 @@
+{
+  "name": "light-search-engine",
+  "description": "IR demonstration",
+  "main": "app.js",
+  "license": "ISC",
+  "keywords": [
+    "IR",
+    "demo",
+    "search",
+    "engine"
+  ],
+  "homepage": "https://github.com/FITE-5thYear/Light-Search-Engine",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  },
+  "devDependencies": {
+    "mark.js": "^8.10.1"
+  }
+}

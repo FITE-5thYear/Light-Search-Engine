@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Light Search Engine</title>
+        <link rel="stylesheet" href="/pages/assets/css/main.css">
+        <link rel="stylesheet" href="/pages/assets/css/lato.css">
+        <link rel="stylesheet" href="/pages/assets/css/raleway.css">
+        <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+        <script src="/bower_components/jquery/dist/jquery.min.js"></script> 
+    </head>    
+    <body>
+        <header>
+            <h1 class="name" style="display:inline-block;">Light Search Engine</h1><small>v0.2</small>
+        </header>
+        
+        <section>
+            <div class="ui action input">
+                <input type="text" placeholder="Search..." class="search" id="input-search" />
+                <button class="search ui button btn-wiki" id="button-search" onclick="submit()">Search</button>
+                <br>
+                <select id="method" class="form-control" style="width:25%;margin:0 auto;margin-top:20px;">
+                    <option value="cosine">Cosine Simliarity</option>
+                    <option value="semantic">Semantic & Cosine Simliarity</option>
+                </select>
+                <a href="#" target="_blank" class="random">Feeling Lucky?</a>
+                <a href="coursera-data" class="random">Coursera Crawled Data with XPath</a>
+                <div class="post-awesome-line"></div>                
+            </div>
+        </section>    
+
+        <footer style="text-align:center">
+            V0.2 - Based on Vector Model | TF/IDF Factors
+        </footer>
+
+    </body>
+    
+
+    <script>
+        function submit(){
+            window.location.href = '/search?input=' + encodeURI($('#input-search').val()) + '&method=' + $('#method').val();
+        }
+    </script>
+</html>

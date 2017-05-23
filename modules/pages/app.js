@@ -12,4 +12,8 @@ module.exports = function(app){
 
     app.route('/').get(indexCtr.renderIndex);
     
+    app.route('/eval_chart').get(indexCtr.renderEvalChart);
+
+    app.route('/coursera-data').get(indexCtr.renderCourserData);
+    
 }

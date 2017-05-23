@@ -10,25 +10,26 @@
     </head>    
     <body>
         <header>
-            <h1 class="name" style="display:inline-block;">Light Search Engine</h1><small>v0.1</small>
+            <h1 class="name" style="display:inline-block;">Light Search Engine</h1><small>v0.2</small>
         </header>
         
         <section>
             <div class="ui action input">
                 <input type="text" placeholder="Search..." class="search" id="input-search" />
                 <button class="search ui button btn-wiki" id="button-search" onclick="submit()">Search</button>
-                <select id="method">
+                <br>
+                <select id="method" class="form-control" style="width:25%;margin:0 auto;margin-top:20px;">
                     <option value="cosine">Cosine Simliarity</option>
                     <option value="semantic">Semantic & Cosine Simliarity</option>
                 </select>
                 <a href="#" target="_blank" class="random">Feeling Lucky?</a>
-                <a href="evaluate" target="_blank" class="random">Evaluate</a>
+                <a href="coursera-data" class="random">Coursera Crawled Data with XPath</a>
                 <div class="post-awesome-line"></div>                
             </div>
         </section>    
 
         <footer style="text-align:center">
-            V0.1 - Based on Vector Model | TF/IDF Factors
+            V0.2 - Based on Vector Model | TF/IDF Factors
         </footer>
 
     </body>

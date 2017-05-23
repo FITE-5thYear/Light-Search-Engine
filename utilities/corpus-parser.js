@@ -86,7 +86,7 @@ function readAndParseStructer1(filePath){
             deferred.reject(err);
         }
 
-        var corpusLines = data.split("\n");
+        var corpusLines = data.split(/\r?\n/);
         var docsArray = new Array();
         var docsCount = -1,section;
 
@@ -136,7 +136,7 @@ function readAndParseStructer1(filePath){
             }
 
             if (section == 3){
-                docsArray[docsCount].text = docsArray[docsCount].text + lineString;
+                docsArray[docsCount].text = docsArray[docsCount].text.trim() + " " + lineString.trim();
             }
         });
 
@@ -163,7 +163,7 @@ function readAndParseStructer2(filePath){
                 if (line.startsWith("*text")){
                     docsCount++;
                     docsArray[docsCount] = new Object();
-                    docsArray[docsCount].id = docsCount;
+                    docsArray[docsCount].id = docsCount + 1;
                     docsArray[docsCount].text = "";
                 }else
                 if (line.startsWith("*stop")){

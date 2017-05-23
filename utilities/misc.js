@@ -6,16 +6,23 @@ module.exports.tickerToString = function(ticker){
     return ticker.parse(ticker.max());
 }
 
-module.exports.getDocumentsById = function(docs){
+module.exports.getDocumentsById = function(_docs){
 
-    var docsIds = docs.map(function(doc){ return doc.docId; });
+    var docsIds = _docs.map(function(doc){ return doc.docId; });
 
     return parser.parseCorpus()
                 .then(function(docs){
-                    docs = docs.filter(function(doc){
-                            return _.includes(docsIds, +doc.id); 
-                        });
+                    var results = [];
+                    docsIds.forEach(function(docId){
+                        var wantedDoc = docs.filter(doc => +doc.id == docId)[0];
 
-                    return docs;
+                        results.push( { id : docId, text : wantedDoc.text, title : wantedDoc.title});
+                    });
+
+                    //docs = docs.filter(function(doc){
+                      //      return _.includes(docsIds, +doc.id); 
+                        //});
+
+                    return results;
                 });
 }

@@ -2,7 +2,9 @@
 var db = require('./../config/sequelize'),
     math = require('mathjs'),
     HashMap = require('hashmap'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    documentVectors = require('./index').documentVectors,
+    kTop = require('../config/env').k_top;
 
 module.exports.match = function(queryTerms, dictionary){
     var scores = new HashMap();
@@ -44,6 +46,9 @@ module.exports.match = function(queryTerms, dictionary){
             //Wt,q = tf x idf  : the query is considered a single document in a collection
             let wTQ = queryTerm.tf * idf;
 
+            if(queryTerm.weight) // the queryTerm holds weight
+                wTQ = queryTerm.weight;
+
 
             //for each pair of (d, TFt,d)
             //calculate term weight WFt,d            
@@ -66,9 +71,16 @@ module.exports.match = function(queryTerms, dictionary){
             
         });
 
+
+        scores.forEach(function(score){
+            var documentLength = documentVectors.get(score.docId+'').length;
+
+            score.score = score.score / documentLength;
+        });
+
         //TODO: * 10 should be delegates to config files as top-K
         //      * use priority queue
-        return _.slice(_.orderBy(scores.values(), 'score', 'desc'), 0, 10);
+        return _.slice(_.orderBy(scores.values(), 'score', 'desc'), 0, kTop);
 
     });
 }

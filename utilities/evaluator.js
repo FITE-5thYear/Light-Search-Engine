@@ -4,23 +4,42 @@ var fs = require('fs'),
     HashMap = require('hashmap'),
     winston = require('../config/winston'),
     q = require('q'),
-    config = require('../config/config');
+    corpus = require('./../config/env').corpus;
+
+module.exports.queriesHashMap = queriesHashMap;
+module.exports.relevanceHashMap = revelanceHashMap;
 
 
+var queriesHashMap, revelanceHashMap;
 
-
-module.exports.init = function(){
+module.exports.getEvalData = function(){
     var corpusDir = __dirname + '/../corpus/';
-    if (config.corpus == "CRAN" || config.corpus == "ADI"){
-    winston.info('Read quries file');
-    var quriesFileData      = fs.readFileSync(corpusDir + config.corpus + '/' + config.corpus +".QRY",'utf-8');
-    winston.info('Read relevance file');
-    var relevanceFileData   = fs.readFileSync(corpusDir + config.corpus + '/' +config.corpus +".REL",'utf-8');
-    var quriesHashMap = readAndParseQueriesFile(quriesFileData);
-    quriesHashMap = readAndParseRelevanceFile(relevanceFileData,quriesHashMap);
-    module.exports.quriesHashMap = quriesHashMap;
-    }else{
-        winston.error("No evaluation for corpus with name " + config.corpus);
+    if (corpus == "CRAN" || corpus == "ADI"){
+        winston.info('Read quries file');
+        var quriesFileData      = fs.readFileSync(corpusDir + corpus + '/' + corpus +".QRY",'utf-8');
+        winston.info('Read relevance file');
+        var relevanceFileData   = fs.readFileSync(corpusDir + corpus + '/' + corpus +".REL",'utf-8');
+        var quriesHashMap = readAndParseQueriesFile(quriesFileData);
+        quriesHashMap = readAndParseRelevanceFile(relevanceFileData,quriesHashMap);
+        module.exports.quriesHashMap = quriesHashMap;
+    }else if(corpus == "TIME"){
+        var queriesFilePath = corpusDir + corpus + '/' + corpus +".QUE",
+            revelanceFilePath = corpusDir + corpus + '/' + corpus +".REL";
+
+
+        winston.info('Reading queries file : ' + queriesFilePath);
+        var queriesFileData = fs.readFileSync(queriesFilePath,'utf-8');
+
+        winston.info('Reading relevance file : ' + revelanceFilePath);
+        var relevanceFileData   = fs.readFileSync(revelanceFilePath,'utf-8');
+        
+        queriesHashMap = parseTIMEQueries(queriesFileData);
+        revelanceHashMap = parseTIMERevelance(relevanceFileData);
+
+        return { queries : queriesHashMap, revelances : revelanceHashMap };
+    }    
+    else{
+        winston.error("No evaluation for corpus with name " + corpus);
     } 
 }
 
@@ -80,6 +99,35 @@ function readAndParseRelevanceFile(data,quriesHashMap){
     return quriesHashMap;
 }
 
+function parseTIMEQueries(data){
+    var lines = data.split(/\r?\n/),
+        queryStrings = [];
 
+    lines.forEach(function(line){
+        if(!line.startsWith('*')){
+            queryStrings.push(line);
+        }
+    });
 
+    return queryStrings.filter( line => line != "");
+}
+
+function parseTIMERevelance(data){
+    var lines = data.split(/\r?\n/),
+        lines = lines.filter( line => line != ""),
+        revelances = [];
+
+    lines.forEach(function(line){
+        var lineData = line.split(/\s/g);
+
+        lineData = lineData.filter(_line => _line != "");
+
+        revelances.push({
+            queryNumber :  lineData.slice(0,1)[0],
+            documents : lineData.slice(1, lines.length)
+        });
+    });
+    
+    return revelances;
+}
 

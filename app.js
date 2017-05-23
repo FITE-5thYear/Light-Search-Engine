@@ -18,13 +18,13 @@ function createApp(){
         app.listen(config.port);
         winston.info("App started and running on port: " + config.port);
         
-        require('./utilities/index')().then(function(index){
+        //require('./utilities/index')().then(function(index){
             //augmenting every request to /search endpoint with the index
             //TODO: remove
             app.use('/search', function(req, res, next){
                 req.index = index;
                 next();
             });
-        });
+        //});
     });    
 }

@@ -4,6 +4,7 @@
   "description": "IR demonstration",
   "main": "app.js",
   "dependencies": {
+    "async": "^2.4.1",
     "body-parser": "^1.17.1",
     "exectimer": "^2.0.3",
     "express": "^4.15.2",

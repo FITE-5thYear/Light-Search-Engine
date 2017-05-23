@@ -124,6 +124,11 @@ parser
                 truncate: true
             });
 
+            db.DocumentVectors.destroy({
+                where: {},
+                truncate: true
+            });
+
             winston.info('Starting to populate persistent storage with inverted index...');
             
             var tick = new Tick('storing');
@@ -197,7 +202,7 @@ function populateDocumentVectors(db, documentsVectors,docs) {
                 tick.stop();
                  winston.info('Last process elapsed ' + T.timers.storing_document_vectors.parse(T.timers.storing_document_vectors.max()));
 
-                 populateDocumentLength(db,docs);
+                 //populateDocumentLength(db,docs);
            });
 }
 

@@ -13,17 +13,19 @@ var db = require('./../config/sequelize'),
 
 
 module.exports.match = function(query, threshold){
+    threshold = require('./../config/env').threshold;
+
     return queryProcessor
         .process(query)
         .then(function(queryData){
             console.log(queryData);
-            return applyQueryReweighting(queryData, 0.8);
+            return applyQueryReweighting(queryData, threshold);
         })
         .then(function(reweightedQuery){
             console.log("Reweighted Query:")
             console.log(reweightedQuery);
 
-            return applyQueryExpansion(reweightedQuery, 0.8);
+            return applyQueryExpansion(reweightedQuery, threshold);
         })                      
         .then(function(expandedQuery){
             var terms = expandedQuery.queryEntries.map((queryEntry) => queryEntry.term);
@@ -35,7 +37,7 @@ module.exports.match = function(query, threshold){
             console.log("Expanded Query:");
             console.log(util.inspect(expandedQuery, false, 3));
 
-            return applyTermWeighting(expandedQuery, 0.8);
+            return applyTermWeighting(expandedQuery, threshold);
         })
         .then(function(reweightedQuery){
             console.log("Term Weighted Query:");

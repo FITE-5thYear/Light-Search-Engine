@@ -2,7 +2,8 @@ var wordNet = require('wordnet-magic'),
     wn = wordNet(require('./../config/env').wordNetPath),
     _ = require('lodash'),
     HashMap = require('hashmap'),
-    hyponymsHashMap = new HashMap();
+    hyponymsHashMap = new HashMap(),
+    inited = false;
 
 module.exports.getTermSynonyms = function(term){
     return new Promise(function(resolve, reject){
@@ -81,6 +82,16 @@ module.exports.getTermHyponymsCount = function(term){
 module.exports.getTermsHyponyms = function(terms){
     var promises = [];
 
+
+    jsonHashMap = require('./../hashmap.json');
+    
+    if(!inited){
+        jsonHashMap.forEach(function(entry){
+            hyponymsHashMap.set(entry.key, entry.value);
+        });
+        inited = true;
+    }
+    
     terms.forEach(function(term){
         if(hyponymsHashMap.has(term)){
 
@@ -125,3 +136,21 @@ module.exports.getTermsHyponyms = function(terms){
     return Promise.all(promises);
 
 }
+
+module.exports.writeHyponymsHashMap = function(){
+    var arraied = [];
+
+    hyponymsHashMap.forEach(function(value, key){
+        arraied.push({ key : key, value : value});
+    });
+
+    var fs = require('fs');
+
+    fs.writeFile('hashmap.json', JSON.stringify(arraied), (err) => console.log(err));
+}
+
+function initHashMap(){
+    
+}
+
+initHashMap();

@@ -16,5 +16,6 @@ module.exports = {
     corpus: 'TIME',
     wordNetPath : './node_modules/wordnet-magic/data/sqlite-31.db',
     lemmatize : true,
-    k_top : 10
+    k_top : 10,
+    threshold : 0.8
 }

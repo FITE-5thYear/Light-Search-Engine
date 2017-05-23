@@ -23,14 +23,14 @@ module.exports.search = function(req, res){
             .then(function(tokens){
                 return cosineMatchingFunction
                         .match(tokens.queryEntries)
-                        .then(function(scores){
-                            return misc.getDocumentsById(scores);
+                        .then(function(result){
+                            return misc.getDocumentsById(result);
                         })
                         .then(function(results){
                             var templateString = fs.readFileSync(path.resolve(__dirname + '//..//views//results.html'), 'utf-8');
 
                             res.set('Content-Type', 'text/html');
-                            return res.send(Mustache.render(templateString, {results : results}));            
+                            return res.send(Mustache.render(templateString, {results : results , query:req.query.input}));            
                         });
             })
             .catch(function(err){
@@ -38,12 +38,18 @@ module.exports.search = function(req, res){
                 return res.status(500).end();
             });
     }else { //semantic
+        var processedQuery;
+
         semanticMatchingFunction
             .match(req.query.input)
-            .then(function(scores){
-                return misc.getDocumentsById(scores);
+            .then(function(result){
+                processedQuery = result.query;
+                
+                return misc.getDocumentsById(result.scores);
             })
             .then(function(results){
+                console.log(processedQuery);
+
                 var templateString = fs.readFileSync(path.resolve(__dirname + '//..//views//results.html'), 'utf-8');
 
                 res.set('Content-Type', 'text/html');

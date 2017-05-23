@@ -43,7 +43,11 @@ module.exports.match = function(query, threshold){
             console.log("Term Weighted Query:");
             console.log(util.inspect(reweightedQuery, false, 3));
 
-            return cosineMatcher.match(reweightedQuery.queryEntries);
+            return cosineMatcher.match(reweightedQuery.queryEntries)
+                    .then(function(scores){
+                        return { scores : scores, query : reweightedQuery };
+                    });
+            
         });
 }
 

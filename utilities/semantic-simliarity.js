@@ -44,8 +44,8 @@ module.exports.match = function(query, threshold){
             console.log(util.inspect(reweightedQuery, false, 3));
 
             return cosineMatcher.match(reweightedQuery.queryEntries)
-                    .then(function(scores){
-                        return { scores : scores, query : reweightedQuery };
+                    .then(function(result){
+                        return { scores : result.scores, query : reweightedQuery, nRetrievedDocs : result.nRetrievedDocs };
                     });
             
         });

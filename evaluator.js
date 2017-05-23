@@ -1,4 +1,5 @@
-var db = require('./config/sequelize');
+var db = require('./config/sequelize'),
+    _ = require('lodash');
 
 var i = 0,
     results = [];
@@ -26,7 +27,7 @@ function executeQuery(query, cosineMatchingFunction, queryProcessor, evalData){
             console.log(" Query :" + revelance.queryNumber);
             console.log(" TIME revelance : " + revelance.documents);
             try{
-                console.log(" Our Revelance : " + results[evalData.revelances.indexOf(revelance)].map(x => x.docId));
+                console.log(" Our Revelance : " + results.scores[evalData.revelances.indexOf(revelance)].map(x => x.docId));
             }catch(e) {}
         });
 
@@ -44,8 +45,8 @@ function executeQuery(query, cosineMatchingFunction, queryProcessor, evalData){
             .then(function(tokens){
                 return cosineMatchingFunction
                         .match(tokens.queryEntries)
-                        .then(function(scores){
-                            results.push(scores);
+                        .then(function(result){
+                            results.push(result);
                             executeQuery(evalData.queries[i++], cosineMatchingFunction, queryProcessor, evalData);
                         });
             });
@@ -55,16 +56,41 @@ function executeQuerySemantic(query, matchingFunction, queryProcessor, evalData)
     if(i == evalData.queries.length){
         require('./utilities/wordnet').writeHyponymsHashMap();
 
-        evalData.revelances.forEach(function(revelance){
-            console.log(" Query :" + revelance.queryNumber);
-            console.log(" TIME revelance : " + revelance.documents);
-            console.log(" Our Revelance : " + results[evalData.revelances.indexOf(revelance)].map(x => x.docId));
-        });
-        return ;
+        for(let i = 0; i < results.length; i++){
+            console.log(" Query :" + evalData.revelances[i].queryNumber);
+            console.log(" TIME revelance : " + evalData.revelances[i].documents);
+            console.log(" Our Revelance : " + results[i].scores.map(x => x.docId));
+        }
+
+        return calculateMeasures(evalData); // calculate precision & recall
     }
 
-    return matchingFunction.match(query).then(function(scores){
-        results.push(scores);
+    return matchingFunction.match(query).then(function(result){
+        results.push(result);
         return executeQuerySemantic(evalData.queries[i++], matchingFunction, queryProcessor, evalData);
     });
+}
+
+
+function calculateMeasures(evalData){
+    var measures = [];
+
+    for(let i = 0; i < results.length; i ++){
+        let revelance = evalData.revelances[i],
+            relevantItemsRetrieved = _.intersection(revelance.documents, results[i].scores.map(x => x.docId +'')).length,
+            retrievedItems = results[i].nRetrievedDocs,
+            relevantItems = evalData.revelances[i].documents.length;
+
+        measures.push({
+            relevantItemsRetrieved : relevantItemsRetrieved,
+            retrievedItems : retrievedItems,
+            relevantItems : relevantItems,
+            presision : relevantItemsRetrieved / retrievedItems,
+            recall : relevantItemsRetrieved / relevantItems,
+            query : evalData.revelances[i].queryNumber
+        });
+
+    }
+
+    require('fs').writeFile('./evals.json', JSON.stringify(measures));
 }

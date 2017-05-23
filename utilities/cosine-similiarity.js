@@ -40,7 +40,7 @@ module.exports.match = function(queryTerms, dictionary){
                 return;
             
             //calculate idf of term            
-            let idf = math.log(termData.postings.ndf, 2);
+            let idf = math.log(termData.postings.ndf);
 
             //calculate query term weight Wt,q
             //Wt,q = tf x idf  : the query is considered a single document in a collection
@@ -78,9 +78,8 @@ module.exports.match = function(queryTerms, dictionary){
             score.score = score.score / documentLength;
         });
 
-        //TODO: * 10 should be delegates to config files as top-K
-        //      * use priority queue
-        return _.slice(_.orderBy(scores.values(), 'score', 'desc'), 0, kTop);
+        //TODO: * use priority queue
+        return { scores : _.slice(_.orderBy(scores.values(), 'score', 'desc'), 0, kTop), query : queryTerms , nRetrievedDocs : scores._count };
 
     });
 }

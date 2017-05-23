@@ -8,6 +8,10 @@ module.exports.tickerToString = function(ticker){
 
 module.exports.getDocumentsById = function(_docs){
 
+    if(_docs == null){
+        return [];
+    }
+
     var docsIds = _docs.map(function(doc){ return doc.docId; });
 
     return parser.parseCorpus()
@@ -16,7 +20,7 @@ module.exports.getDocumentsById = function(_docs){
                     docsIds.forEach(function(docId){
                         var wantedDoc = docs.filter(doc => +doc.id == docId)[0];
 
-                        results.push( { id : docId, text : wantedDoc.text, title : wantedDoc.title});
+                        results.push({ id : docId, text : wantedDoc.text, title : wantedDoc.title });
                     });
 
                     //docs = docs.filter(function(doc){
